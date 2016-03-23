@@ -15,6 +15,14 @@
 		25CE368B1CA2A9EB0087A98D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25CE36891CA2A9EB0087A98D /* LaunchScreen.storyboard */; };
 		25CE36961CA2A9EB0087A98D /* ArtistPad_ios_swiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE36951CA2A9EB0087A98D /* ArtistPad_ios_swiftTests.swift */; };
 		25CE36A11CA2A9EC0087A98D /* ArtistPad_ios_swiftUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE36A01CA2A9EC0087A98D /* ArtistPad_ios_swiftUITests.swift */; };
+		25CE36AF1CA2AB1D0087A98D /* Constents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE36AE1CA2AB1D0087A98D /* Constents.swift */; };
+		25CE36B11CA2AB5E0087A98D /* DisplayFolders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE36B01CA2AB5E0087A98D /* DisplayFolders.swift */; };
+		25CE36B31CA2AB970087A98D /* DisplaySongs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE36B21CA2AB970087A98D /* DisplaySongs.swift */; };
+		25CE36B51CA2AC150087A98D /* EditSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE36B41CA2AC150087A98D /* EditSong.swift */; };
+		25CE36BA1CA2ACE80087A98D /* Folder+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE36B61CA2ACE80087A98D /* Folder+CoreDataProperties.swift */; };
+		25CE36BB1CA2ACE80087A98D /* Folder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE36B71CA2ACE80087A98D /* Folder.swift */; };
+		25CE36BC1CA2ACE80087A98D /* Song+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE36B81CA2ACE80087A98D /* Song+CoreDataProperties.swift */; };
+		25CE36BD1CA2ACE80087A98D /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE36B91CA2ACE80087A98D /* Song.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +57,14 @@
 		25CE369C1CA2A9EC0087A98D /* ArtistPad-ios-swiftUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ArtistPad-ios-swiftUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		25CE36A01CA2A9EC0087A98D /* ArtistPad_ios_swiftUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistPad_ios_swiftUITests.swift; sourceTree = "<group>"; };
 		25CE36A21CA2A9EC0087A98D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		25CE36AE1CA2AB1D0087A98D /* Constents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constents.swift; sourceTree = "<group>"; };
+		25CE36B01CA2AB5E0087A98D /* DisplayFolders.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayFolders.swift; sourceTree = "<group>"; };
+		25CE36B21CA2AB970087A98D /* DisplaySongs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplaySongs.swift; sourceTree = "<group>"; };
+		25CE36B41CA2AC150087A98D /* EditSong.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditSong.swift; sourceTree = "<group>"; };
+		25CE36B61CA2ACE80087A98D /* Folder+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Folder+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		25CE36B71CA2ACE80087A98D /* Folder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Folder.swift; sourceTree = "<group>"; };
+		25CE36B81CA2ACE80087A98D /* Song+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Song+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		25CE36B91CA2ACE80087A98D /* Song.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +95,10 @@
 		25CE36711CA2A9EA0087A98D = {
 			isa = PBXGroup;
 			children = (
+				25CE36B61CA2ACE80087A98D /* Folder+CoreDataProperties.swift */,
+				25CE36B71CA2ACE80087A98D /* Folder.swift */,
+				25CE36B81CA2ACE80087A98D /* Song+CoreDataProperties.swift */,
+				25CE36B91CA2ACE80087A98D /* Song.swift */,
 				25CE367C1CA2A9EB0087A98D /* ArtistPad-ios-swift */,
 				25CE36941CA2A9EB0087A98D /* ArtistPad-ios-swiftTests */,
 				25CE369F1CA2A9EC0087A98D /* ArtistPad-ios-swiftUITests */,
@@ -106,6 +126,10 @@
 				25CE36891CA2A9EB0087A98D /* LaunchScreen.storyboard */,
 				25CE368C1CA2A9EB0087A98D /* Info.plist */,
 				25CE36841CA2A9EB0087A98D /* ArtistPad_ios_swift.xcdatamodeld */,
+				25CE36AE1CA2AB1D0087A98D /* Constents.swift */,
+				25CE36B01CA2AB5E0087A98D /* DisplayFolders.swift */,
+				25CE36B21CA2AB970087A98D /* DisplaySongs.swift */,
+				25CE36B41CA2AC150087A98D /* EditSong.swift */,
 			);
 			path = "ArtistPad-ios-swift";
 			sourceTree = "<group>";
@@ -260,8 +284,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				25CE36801CA2A9EB0087A98D /* ViewController.swift in Sources */,
+				25CE36BA1CA2ACE80087A98D /* Folder+CoreDataProperties.swift in Sources */,
+				25CE36B51CA2AC150087A98D /* EditSong.swift in Sources */,
 				25CE367E1CA2A9EB0087A98D /* AppDelegate.swift in Sources */,
+				25CE36BC1CA2ACE80087A98D /* Song+CoreDataProperties.swift in Sources */,
+				25CE36BD1CA2ACE80087A98D /* Song.swift in Sources */,
+				25CE36B11CA2AB5E0087A98D /* DisplayFolders.swift in Sources */,
 				25CE36861CA2A9EB0087A98D /* ArtistPad_ios_swift.xcdatamodeld in Sources */,
+				25CE36AF1CA2AB1D0087A98D /* Constents.swift in Sources */,
+				25CE36B31CA2AB970087A98D /* DisplaySongs.swift in Sources */,
+				25CE36BB1CA2ACE80087A98D /* Folder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
