@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		250045281CA4320100128E07 /* EditField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 250045271CA4320100128E07 /* EditField.swift */; };
 		25CE367E1CA2A9EB0087A98D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE367D1CA2A9EB0087A98D /* AppDelegate.swift */; };
 		25CE36801CA2A9EB0087A98D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CE367F1CA2A9EB0087A98D /* ViewController.swift */; };
 		25CE36831CA2A9EB0087A98D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25CE36811CA2A9EB0087A98D /* Main.storyboard */; };
@@ -43,6 +44,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		250045271CA4320100128E07 /* EditField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditField.swift; sourceTree = "<group>"; };
 		25CE367A1CA2A9EB0087A98D /* ArtistPad-ios-swift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ArtistPad-ios-swift.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		25CE367D1CA2A9EB0087A98D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		25CE367F1CA2A9EB0087A98D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				25CE36B01CA2AB5E0087A98D /* DisplayFolders.swift */,
 				25CE36B21CA2AB970087A98D /* DisplaySongs.swift */,
 				25CE36B41CA2AC150087A98D /* EditSong.swift */,
+				250045271CA4320100128E07 /* EditField.swift */,
 			);
 			path = "ArtistPad-ios-swift";
 			sourceTree = "<group>";
@@ -287,6 +290,7 @@
 				25CE36BA1CA2ACE80087A98D /* Folder+CoreDataProperties.swift in Sources */,
 				25CE36B51CA2AC150087A98D /* EditSong.swift in Sources */,
 				25CE367E1CA2A9EB0087A98D /* AppDelegate.swift in Sources */,
+				250045281CA4320100128E07 /* EditField.swift in Sources */,
 				25CE36BC1CA2ACE80087A98D /* Song+CoreDataProperties.swift in Sources */,
 				25CE36BD1CA2ACE80087A98D /* Song.swift in Sources */,
 				25CE36B11CA2AB5E0087A98D /* DisplayFolders.swift in Sources */,
@@ -520,6 +524,7 @@
 				25CE36A71CA2A9EC0087A98D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		25CE36A81CA2A9EC0087A98D /* Build configuration list for PBXNativeTarget "ArtistPad-ios-swiftTests" */ = {
 			isa = XCConfigurationList;
@@ -528,6 +533,7 @@
 				25CE36AA1CA2A9EC0087A98D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		25CE36AB1CA2A9EC0087A98D /* Build configuration list for PBXNativeTarget "ArtistPad-ios-swiftUITests" */ = {
 			isa = XCConfigurationList;
@@ -536,6 +542,7 @@
 				25CE36AD1CA2A9EC0087A98D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

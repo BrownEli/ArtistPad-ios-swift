@@ -19,14 +19,15 @@ class ViewController: UIViewController , UITableViewDataSource,UITableViewDelega
     override func viewDidLoad() {
         super.viewDidLoad();
         configEntityList();
-        displayAd();
+        //displayAd();
         initNavController();
+        initToolBar();
         initTable();
     }
     
     func displayAd(){
         let ad = UIView(frame: ConstentValues.GAB);
-        ad.backgroundColor = UIColor.greenColor();
+        ad.backgroundColor = UIColor.init(red: 1, green: 2, blue: 1, alpha: 1);
         view.addSubview(ad);
     }
     
@@ -53,18 +54,32 @@ class ViewController: UIViewController , UITableViewDataSource,UITableViewDelega
     func initNavController(){
         let lable = UILabel(frame: CGRect(x: 0, y: 0, width: 80, height: 30));
         lable.text = ConstentValues.AppName;
-        lable.textColor = UIColor.blueColor();
+        lable.textColor = UIColor.whiteColor();
         self.navigationItem.titleView = lable;
-        let barBtnSettings = UIBarButtonItem(title: ConstentValues.SETTINGS, style: .Plain, target: self, action: nil);
-        self.navigationItem.rightBarButtonItem = barBtnSettings;
+        navigationController?.navigationBar.barTintColor = UIColor.darkGrayColor();
+        navigationController?.navigationBar.tintColor = UIColor.whiteColor();
     }
     
+    func initToolBar(){
+        var items = [UIBarButtonItem]();
+        let contact = UIBarButtonItem(title: "Contact", style: .Plain, target: self, action: nil);
+        let about = UIBarButtonItem(title: "About", style: .Plain, target: self, action: "alert");
+        let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        items.append(contact);
+        items.append(flex);
+        items.append(about);
+        self.toolbarItems = items;
+        navigationController?.toolbarHidden = false;
+        navigationController?.toolbar.barTintColor = UIColor.darkGrayColor();
+        navigationController?.toolbar.tintColor = UIColor.whiteColor();
+    }
     
     
     func initTable(){
         entityTable = UITableView(frame: ConstentValues.TABLE_RECT);
         entityTable.delegate = self;
         entityTable.dataSource = self;
+        entityTable.backgroundColor = UIColor.lightGrayColor();
         entityTable.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: ConstentValues.Identifier);
         view.addSubview(entityTable);
     }
@@ -80,6 +95,8 @@ class ViewController: UIViewController , UITableViewDataSource,UITableViewDelega
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(ConstentValues.Identifier, forIndexPath: indexPath);
         cell.textLabel?.text = entityList[indexPath.row];
+        cell.textLabel?.textColor = UIColor.darkGrayColor();
+        cell.backgroundColor = UIColor.lightGrayColor();
         return cell;
     }
     
@@ -97,6 +114,13 @@ class ViewController: UIViewController , UITableViewDataSource,UITableViewDelega
                 theNavigationController.pushViewController(displaySongs, animated: true);
             }
         }
+    }
+    
+    func alert(){
+        let alert = UIAlertController(title: "About", message: "Artist pad by Eli Brown version 1.0", preferredStyle: .Alert);
+        let action = UIAlertAction(title: ConstentValues.Ok, style: .Default, handler: {(action: UIAlertAction) -> Void in});
+        alert.addAction(action);
+        presentViewController(alert, animated: true, completion: nil);
     }
     
     override func didReceiveMemoryWarning() {

@@ -17,14 +17,33 @@ class DisplaySongs : UIViewController, UITableViewDelegate
     var list : [Song]!;
     var tableData : UITableView!;
     var navigator : UINavigationBar!;
+    var add : String!;
+    var placeholderTF : String!;
     
     override func viewDidLoad() {
         super.viewDidLoad();
-        displayAd();
-        delegate = UIApplication.sharedApplication().delegate as! AppDelegate;
+        setDetails();
+        //displayAd();
         initNavController();
         initTable();
         initAddBtn();
+    }
+    
+    func setDetails(){
+        switch (folder.type as! Int){
+        case 2:
+            add = ConstentValues.Add_Single;
+            placeholderTF = ConstentValues.Enter_Single
+        case 3:
+            add = ConstentValues.Add_Cover;
+            placeholderTF = ConstentValues.Enter_Cover
+        case 4:
+            add = ConstentValues.Add_Poem;
+            placeholderTF = ConstentValues.Enter_Poem
+        default:
+            break;
+        }
+        delegate = UIApplication.sharedApplication().delegate as! AppDelegate;
     }
     
     func displayAd(){
@@ -34,22 +53,27 @@ class DisplaySongs : UIViewController, UITableViewDelegate
     }
     
     func initAddBtn(){
-        let btn = UIButton(type: .System);
-        btn.frame = CGRect(x: 0, y: (view.frame.height) - 40, width: view.frame.width, height: 40);
-        btn.setTitleColor(UIColor.blueColor(), forState: .Normal);
-        btn.setTitle("add", forState: .Normal);
-        btn.addTarget(self, action: "alertTextField", forControlEvents: .TouchUpInside);
-        view.addSubview(btn);
+        let add = UIBarButtonItem(title: self.add, style: .Plain, target: self, action: "alertTextField");
+        let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil);
+        var items = [UIBarButtonItem]();
+        items.append(flex);
+        items.append(add);
+        items.append(flex);
+        self.toolbarItems = items;
+        navigationController?.toolbarHidden = false;
+        navigationController?.toolbar.barTintColor = UIColor.darkGrayColor();
+        navigationController?.toolbar.tintColor = UIColor.whiteColor();
     }
     
     func initNavController(){
         let lable = UILabel(frame: CGRect(x: 0, y: 0, width: 80, height: 30));
         lable.text = self.folder.folderName;
-        lable.textColor = UIColor.blueColor();
+        lable.textColor = UIColor.whiteColor();
         self.navigationItem.titleView = lable;
-        let barBtnSettings = UIBarButtonItem(title: ConstentValues.SETTINGS, style: .Plain, target: self, action: nil);
-        self.navigationItem.rightBarButtonItem = barBtnSettings;
         self.navigationItem.leftItemsSupplementBackButton = true;
+        navigationController?.navigationBar.barTintColor = UIColor.darkGrayColor();
+        navigationController?.navigationBar.tintColor = UIColor.whiteColor();
+        
     }
     
     
@@ -57,8 +81,9 @@ class DisplaySongs : UIViewController, UITableViewDelegate
         tableData = UITableView(frame: ConstentValues.TABLE_RECT);
         tableData.delegate = self;
         tableData.dataSource = self;
+        tableData.backgroundColor = UIColor.lightGrayColor();
         tableData.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: ConstentValues.Identifier);
-        list = delegate.getListOfSongs(folder.id! as Int, type: folder.type! as Int);
+        list = delegate.getListOfSongs(self.folder.id as! Int, type: self.folder.type as! Int);
         view.addSubview(tableData);
     }
     
@@ -73,6 +98,8 @@ class DisplaySongs : UIViewController, UITableViewDelegate
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(ConstentValues.Identifier, forIndexPath: indexPath);
         cell.textLabel?.text = list[indexPath.row].songName;
+        cell.textLabel?.textColor = UIColor.darkGrayColor();
+        cell.backgroundColor = UIColor.lightGrayColor();
         return cell;
     }
     
@@ -101,9 +128,7 @@ class DisplaySongs : UIViewController, UITableViewDelegate
     //app simple alerter
     func alert(title : String , msg : String)->UIAlertController{
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert);
-        
         let action = UIAlertAction(title: ConstentValues.Ok, style: .Default, handler: {(action: UIAlertAction) -> Void in});
-        
         alert.addAction(action);
         return alert;
     }
@@ -123,11 +148,16 @@ class DisplaySongs : UIViewController, UITableViewDelegate
         });
         
         alert.addTextFieldWithConfigurationHandler { (textField: UITextField) -> Void in
-            textField.placeholder = "";
+            textField.placeholder = self.placeholderTF;
         }
         
         alert.addAction(action);
         presentViewController(alert, animated: true, completion: nil);
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        list = delegate.getListOfSongs(self.folder.id as! Int, type: self.folder.type as! Int);
+        tableData.reloadData();
     }
     
     override func didReceiveMemoryWarning() {

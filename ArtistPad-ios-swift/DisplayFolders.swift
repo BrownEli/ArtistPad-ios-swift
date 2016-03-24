@@ -22,11 +22,11 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
     
     override func viewDidLoad() {
         super.viewDidLoad();
-        displayAd();
         setDetails();
+        //displayAd();
         initNavController();
+        initToolbar();
         initTable();
-        initSaveBtn();
     }
     
     func displayAd(){
@@ -46,33 +46,36 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
             placeholderTF = ConstentValues.Enter_Mixtape
         }
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate;
-        
-    }
-    
-    func initSaveBtn(){
-        let btn = UIButton(type: .System);
-        btn.frame = CGRect(x: 0, y: (view.frame.height) - 40, width: view.frame.width, height: 40);
-        btn.setTitleColor(UIColor.blueColor(), forState: .Normal);
-        btn.setTitle(add, forState: .Normal);
-        btn.addTarget(self, action: "alertTextField", forControlEvents: .TouchUpInside);
-        view.addSubview(btn);
     }
     
     func initNavController(){
         let lable = UILabel(frame: CGRect(x: 0, y: 0, width: 80, height: 30));
         lable.text = pageTitle;
-        lable.textColor = UIColor.blueColor();
+        lable.textColor = UIColor.whiteColor();
         self.navigationItem.titleView = lable;
-        let barBtnSettings = UIBarButtonItem(title: ConstentValues.SETTINGS, style: .Plain, target: self, action: nil);
-        self.navigationItem.rightBarButtonItem = barBtnSettings;
         self.navigationItem.leftItemsSupplementBackButton = true;
+        navigationController?.navigationBar.barTintColor = UIColor.darkGrayColor();
+        navigationController?.navigationBar.tintColor = UIColor.whiteColor();
     }
     
+    func initToolbar(){
+        let add = UIBarButtonItem(title: self.add, style: .Plain, target: self, action: "alertTextField");
+        let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil);
+        var items = [UIBarButtonItem]();
+        items.append(flex);
+        items.append(add);
+        items.append(flex);
+        self.toolbarItems = items;
+        navigationController?.toolbarHidden = false;
+        navigationController?.toolbar.barTintColor = UIColor.darkGrayColor();
+        navigationController?.toolbar.tintColor = UIColor.whiteColor();
+    }
     
     func initTable(){
         _tableData = UITableView(frame: ConstentValues.TABLE_RECT);
         _tableData.delegate = self;
         _tableData.dataSource = self;
+        _tableData.backgroundColor = UIColor.lightGrayColor();
         _tableData.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: ConstentValues.Identifier);
         _list = delegate.getlistOfFolders(type);
         view.addSubview(_tableData);
@@ -90,6 +93,8 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
         let cell = tableView.dequeueReusableCellWithIdentifier(ConstentValues.Identifier, forIndexPath: indexPath);
         let s = _list[indexPath.row].folderName;
         cell.textLabel?.text = s;
+        cell.textLabel?.textColor = UIColor.darkGrayColor();
+        cell.backgroundColor = UIColor.lightGrayColor();
         return cell;
     }
     
@@ -116,19 +121,16 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
     
     
     //app simple alerter
-    func alert(title : String , msg : String)->UIAlertController{
+    func alert(title : String , msg : String){
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert);
-        
         let action = UIAlertAction(title: ConstentValues.Ok, style: .Default, handler: {(action: UIAlertAction) -> Void in});
-        
         alert.addAction(action);
-        return alert;
+        navigationController?.pushViewController(alert, animated: true);
     }
     
     //app textfiled alerter
     func alertTextField(){
         let alert = UIAlertController(title: title, message: "", preferredStyle: .Alert);
-        
         let action = UIAlertAction(title: ConstentValues.Done, style: .Default, handler: {(action: UIAlertAction) -> Void in
             if let theTextFields = alert.textFields{
                 let entityData = theTextFields[0].text!;
@@ -138,13 +140,16 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
                 self._tableData.reloadData();
             }
         });
-        
         alert.addTextFieldWithConfigurationHandler { (textField: UITextField) -> Void in
             textField.placeholder = self.placeholderTF;
         }
-        
         alert.addAction(action);
-        presentViewController(alert, animated: true, completion: nil);
+        navigationController?.pushViewController(alert, animated: true);
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        _list = delegate.getlistOfFolders(type);
+        _tableData.reloadData();
     }
     
     override func didReceiveMemoryWarning() {

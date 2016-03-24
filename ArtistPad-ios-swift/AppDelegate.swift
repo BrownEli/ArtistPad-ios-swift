@@ -77,7 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate , UINavigationControllerDe
         self.navigationController = UINavigationController(rootViewController: rootViewController);
         self.navigationController?.delegate = self;
         self.window?.rootViewController = self.navigationController;
-        self.window?.backgroundColor = UIColor.whiteColor();
+        self.window?.backgroundColor = UIColor.lightGrayColor();
         ConstentValues.windowFrame = self.window?.frame;
         return true
     }

@@ -22,7 +22,7 @@ class EditSong : UIViewController{
         displayAd();
         initNavController();
         initTextField();
-        initVanToolbar();
+        initToolbar();
     }
     
     func displayAd(){
@@ -31,30 +31,37 @@ class EditSong : UIViewController{
         view.addSubview(ad);
     }
     
-    func initVanToolbar(){
-        let toolbar = UIToolbar(frame: ConstentValues.GAB);
-        toolbar.frame.origin.y = view.frame.maxY - toolbar.frame.height + 5;
-        let save = UIBarButtonItem(title: "save", style: .Plain, target: self, action: "saveSongData");
+    func initToolbar(){
         var items = [UIBarButtonItem]();
+        let save = UIBarButtonItem(title: "save", style: .Plain, target: self, action: "saveSongData");
+        let share = UIBarButtonItem(title: "share", style: .Plain, target: self, action: "shareSong");
+        let delete = UIBarButtonItem(title: "delete", style: .Plain, target: self, action: "deleteSong");
+        let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil);
+        items.append(flex);
         items.append(save);
-        toolbar.items = items;
+        items.append(share);
+        items.append(delete);
+        items.append(flex);
+        self.toolbarItems = items;
+        navigationController?.toolbarHidden = false;
+        navigationController?.toolbar.barTintColor = UIColor.darkGrayColor();
+        navigationController?.toolbar.tintColor = UIColor.whiteColor();
     }
     
     func initNavController(){
         songNameTF = UITextField(frame: CGRect(x: 0, y: 0, width: 80, height: 30));
         songNameTF.text = song.songName;
-        songNameTF.textColor = UIColor.blueColor();
+        songNameTF.textColor = UIColor.whiteColor();
         self.navigationItem.titleView = songNameTF;
-        let barBtnSettings = UIBarButtonItem(title: ConstentValues.SETTINGS, style: .Plain, target: self, action: nil);
-        self.navigationItem.rightBarButtonItem = barBtnSettings;
         self.navigationItem.leftItemsSupplementBackButton = true;
+        navigationController?.navigationBar.tintColor = UIColor.whiteColor();
+        navigationController?.navigationBar.barTintColor = UIColor.darkGrayColor();
     }
     
     func initTextField(){
         songBodyTF = UITextField(frame: ConstentValues.TF_RECT);
         songBodyTF.placeholder = ConstentValues.EDIT_SONG;
         songBodyTF.text = song.songBody;
-        songBodyTF.textAlignment = .Center;
         view.addSubview(songBodyTF);
     }
     
@@ -62,6 +69,26 @@ class EditSong : UIViewController{
         song.songBody = songBodyTF.text;
         song.songName = songNameTF.text;
         delegate.saveContext();
+        navigationController?.popViewControllerAnimated(true);
+        alert("song saved");
+    }
+    
+    func deleteSong(){
+        delegate.managedObjectContext.deleteObject(song);
+        delegate.saveContext();
+        navigationController?.popViewControllerAnimated(true);
+        alert("song deleted");
+    }
+    
+    func shareSong(){
+        
+    }
+    
+    func alert(msg : String){
+        let alert = UIAlertController(title: "", message: msg, preferredStyle: .Alert);
+        let action = UIAlertAction(title: ConstentValues.Ok, style: .Default, handler: {(action: UIAlertAction) -> Void in});
+        alert.addAction(action);
+        presentViewController(alert, animated: true, completion: nil);
     }
     
     override func didReceiveMemoryWarning() {
