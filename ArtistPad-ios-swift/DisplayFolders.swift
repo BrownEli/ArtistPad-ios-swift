@@ -19,43 +19,37 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
     var add : String!;
     var placeholderTF : String!;
     var type : Int!;
+    var wasOpen : Bool = false;
     
     override func viewDidLoad() {
         super.viewDidLoad();
-        setDetails();
-        //displayAd();
+        setContentDetails();
         initNavController();
         initToolbar();
         initTable();
     }
     
-    func displayAd(){
-        let ad = UIView(frame: ConstentValues.GAB);
-        ad.backgroundColor = UIColor.greenColor();
-        view.addSubview(ad);
-    }
-    
-    func setDetails(){
-        if type == 0 {
-            pageTitle = ConstentEntityNames.Albums
-            add = ConstentValues.Add_Album;
-            placeholderTF = ConstentValues.Enter_Album
-        }else{
-            pageTitle = ConstentEntityNames.Mixtapes
-            add = ConstentValues.Add_Mixtape;
-            placeholderTF = ConstentValues.Enter_Mixtape
-        }
+    func setContentDetails(){
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate;
+        if type == ConstentTypes.TYPE_ALBUMS {
+            pageTitle = ConstentPageTitles.Albums
+            add = ConstentAlertMessgages.Add_Album;
+            placeholderTF = ConstentAlertMessgages.Enter_Album
+        }else if type == ConstentTypes.TYPE_MIXTAPES{
+            pageTitle = ConstentPageTitles.Mixtapes
+            add = ConstentAlertMessgages.Add_Mixtape;
+            placeholderTF = ConstentAlertMessgages.Enter_Mixtape
+        }
     }
     
     func initNavController(){
-        let lable = UILabel(frame: CGRect(x: 0, y: 0, width: 80, height: 30));
+        let lable = UILabel(frame: ConstentRects.NAV_TITLE_RECT);
         lable.text = pageTitle;
         lable.textColor = UIColor.whiteColor();
         self.navigationItem.titleView = lable;
         self.navigationItem.leftItemsSupplementBackButton = true;
-        navigationController?.navigationBar.barTintColor = UIColor.darkGrayColor();
-        navigationController?.navigationBar.tintColor = UIColor.whiteColor();
+        navigationController!.navigationBar.barTintColor = ConstentColors.NAVIGATION_BG_COLOR;
+        navigationController!.navigationBar.tintColor = ConstentColors.APP_TINT_COLOR;
     }
     
     func initToolbar(){
@@ -66,23 +60,23 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
         items.append(add);
         items.append(flex);
         self.toolbarItems = items;
-        navigationController?.toolbarHidden = false;
-        navigationController?.toolbar.barTintColor = UIColor.darkGrayColor();
-        navigationController?.toolbar.tintColor = UIColor.whiteColor();
+        navigationController!.toolbarHidden = false;
+        navigationController!.toolbar.barTintColor = ConstentColors.NAVIGATION_BG_COLOR
+        navigationController!.toolbar.tintColor = ConstentColors.APP_TINT_COLOR
     }
     
     func initTable(){
-        _tableData = UITableView(frame: ConstentValues.TABLE_RECT);
+        _tableData = UITableView(frame: ConstentRects.TABLE_RECT);
         _tableData.delegate = self;
         _tableData.dataSource = self;
-        _tableData.backgroundColor = UIColor.lightGrayColor();
+        //_tableData.backgroundColor = ConstentColors.CONTENT_BG_COLOR;
         _tableData.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: ConstentValues.Identifier);
         _list = delegate.getlistOfFolders(type);
         view.addSubview(_tableData);
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1;
+        return ConstentValues.NUM_OF_SECTIONS_TABLEVIEW;
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -93,17 +87,14 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
         let cell = tableView.dequeueReusableCellWithIdentifier(ConstentValues.Identifier, forIndexPath: indexPath);
         let s = _list[indexPath.row].folderName;
         cell.textLabel?.text = s;
-        cell.textLabel?.textColor = UIColor.darkGrayColor();
-        cell.backgroundColor = UIColor.lightGrayColor();
+        cell.textLabel?.textColor = UIColor.blueColor();
         return cell;
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if let theNavigationController = navigationController{
-            let displaySongs = DisplaySongs();
-            displaySongs.folder = _list[indexPath.row];
-            theNavigationController.pushViewController(displaySongs, animated: true);
-        }
+        let displaySongs = DisplaySongs();
+        displaySongs.folder = _list[indexPath.row];
+        navigationController!.pushViewController(displaySongs, animated: true);
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -123,7 +114,7 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
     //app simple alerter
     func alert(title : String , msg : String){
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert);
-        let action = UIAlertAction(title: ConstentValues.Ok, style: .Default, handler: {(action: UIAlertAction) -> Void in});
+        let action = UIAlertAction(title: ConstentAlertMessgages.Ok, style: .Default, handler: {(action: UIAlertAction) -> Void in});
         alert.addAction(action);
         navigationController?.pushViewController(alert, animated: true);
     }
@@ -131,7 +122,7 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
     //app textfiled alerter
     func alertTextField(){
         let alert = UIAlertController(title: title, message: "", preferredStyle: .Alert);
-        let action = UIAlertAction(title: ConstentValues.Done, style: .Default, handler: {(action: UIAlertAction) -> Void in
+        let action = UIAlertAction(title: ConstentAlertMessgages.Done, style: .Default, handler: {(action: UIAlertAction) -> Void in
             if let theTextFields = alert.textFields{
                 let entityData = theTextFields[0].text!;
                 let delegate = UIApplication.sharedApplication().delegate as! AppDelegate;
@@ -144,12 +135,18 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
             textField.placeholder = self.placeholderTF;
         }
         alert.addAction(action);
-        navigationController?.pushViewController(alert, animated: true);
+        presentViewController(alert, animated: true, completion: nil);
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        if wasOpen {
+            _list = delegate.getlistOfFolders(type);
+            _tableData.reloadData();
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
-        _list = delegate.getlistOfFolders(type);
-        _tableData.reloadData();
+        wasOpen = true;
     }
     
     override func didReceiveMemoryWarning() {

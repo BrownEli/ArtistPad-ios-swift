@@ -19,73 +19,65 @@ class ViewController: UIViewController , UITableViewDataSource,UITableViewDelega
     override func viewDidLoad() {
         super.viewDidLoad();
         configEntityList();
-        //displayAd();
         initNavController();
         initToolBar();
         initTable();
     }
     
-    func displayAd(){
-        let ad = UIView(frame: ConstentValues.GAB);
-        ad.backgroundColor = UIColor.init(red: 1, green: 2, blue: 1, alpha: 1);
-        view.addSubview(ad);
-    }
-    
     func configEntityList(){
         entityList = [String]();
-        entityList.append(ConstentEntityNames.Albums);
-        entityList.append(ConstentEntityNames.Mixtapes);
-        entityList.append(ConstentEntityNames.Singles);
-        entityList.append(ConstentEntityNames.Covers);
-        entityList.append(ConstentEntityNames.Poems);
-        if IsFirstTime.isFirstTime{
+        entityList.append(ConstentPageTitles.Albums);
+        entityList.append(ConstentPageTitles.Mixtapes);
+        entityList.append(ConstentPageTitles.Singles);
+        entityList.append(ConstentPageTitles.Covers);
+        entityList.append(ConstentPageTitles.Poems);
+        if IsFirstTimeRunningApp.isFirstTimeRunningApp{
             initConstentFolder();
         }
     }
     
     func initConstentFolder(){
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate;
-        for var i = 2; i < entityList.count; i++ {
+        for var i = ConstentTypes.TYPE_SINGLES; i < entityList.count; i++ {
             delegate.insertFolder(entityList[i], type: i);
         }
-        IsFirstTime.isFirstTime = !IsFirstTime.isFirstTime;
+        IsFirstTimeRunningApp.isFirstTimeRunningApp = !IsFirstTimeRunningApp.isFirstTimeRunningApp;
     }
     
     func initNavController(){
-        let lable = UILabel(frame: CGRect(x: 0, y: 0, width: 80, height: 30));
+        let lable = UILabel(frame: ConstentRects.NAV_TITLE_RECT);
         lable.text = ConstentValues.AppName;
         lable.textColor = UIColor.whiteColor();
         self.navigationItem.titleView = lable;
-        navigationController?.navigationBar.barTintColor = UIColor.darkGrayColor();
-        navigationController?.navigationBar.tintColor = UIColor.whiteColor();
+        navigationController!.navigationBar.barTintColor = ConstentColors.NAVIGATION_BG_COLOR;
+        navigationController!.navigationBar.tintColor = ConstentColors.APP_TINT_COLOR;
     }
     
     func initToolBar(){
         var items = [UIBarButtonItem]();
-        let contact = UIBarButtonItem(title: "Contact", style: .Plain, target: self, action: nil);
-        let about = UIBarButtonItem(title: "About", style: .Plain, target: self, action: "alert");
+        let contact = UIBarButtonItem(title: ConstentValues.TOOLBAR_CONTACT, style: .Plain, target: self, action: "ContactMe");
+        let about = UIBarButtonItem(title: ConstentValues.TOOLBAR_ABOUT, style: .Plain, target: self, action: "alert");
         let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
         items.append(contact);
         items.append(flex);
         items.append(about);
         self.toolbarItems = items;
-        navigationController?.toolbarHidden = false;
-        navigationController?.toolbar.barTintColor = UIColor.darkGrayColor();
-        navigationController?.toolbar.tintColor = UIColor.whiteColor();
+        navigationController!.toolbarHidden = false;
+        navigationController!.toolbar.barTintColor = ConstentColors.NAVIGATION_BG_COLOR
+        navigationController!.toolbar.tintColor = ConstentColors.APP_TINT_COLOR
     }
     
-    
     func initTable(){
-        entityTable = UITableView(frame: ConstentValues.TABLE_RECT);
+        entityTable = UITableView(frame: ConstentRects.TABLE_RECT);
         entityTable.delegate = self;
         entityTable.dataSource = self;
-        entityTable.backgroundColor = UIColor.lightGrayColor();
+        //entityTable.backgroundColor = ConstentColors.CONTENT_BG_COLOR;
         entityTable.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: ConstentValues.Identifier);
         view.addSubview(entityTable);
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1;
+        return ConstentValues.NUM_OF_SECTIONS_TABLEVIEW;
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -95,14 +87,13 @@ class ViewController: UIViewController , UITableViewDataSource,UITableViewDelega
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(ConstentValues.Identifier, forIndexPath: indexPath);
         cell.textLabel?.text = entityList[indexPath.row];
-        cell.textLabel?.textColor = UIColor.darkGrayColor();
-        cell.backgroundColor = UIColor.lightGrayColor();
+        cell.textLabel?.textColor = UIColor.blueColor();
         return cell;
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let theNavigationController = navigationController{
-            if indexPath.row < 2{
+            if indexPath.row <= ConstentTypes.TYPE_MIXTAPES{
                 let displayFolders = DisplayFolders();
                 displayFolders.type = indexPath.row;
                 theNavigationController.pushViewController(displayFolders, animated: true);
@@ -116,9 +107,15 @@ class ViewController: UIViewController , UITableViewDataSource,UITableViewDelega
         }
     }
     
+    func ContactMe(){
+        let activityViewController = UIActivityViewController(activityItems: [], applicationActivities: []);
+        activityViewController.excludedActivityTypes = [UIActivityTypeMail];
+        presentViewController(activityViewController, animated : true, completion : nil);
+    }
+    
     func alert(){
-        let alert = UIAlertController(title: "About", message: "Artist pad by Eli Brown version 1.0", preferredStyle: .Alert);
-        let action = UIAlertAction(title: ConstentValues.Ok, style: .Default, handler: {(action: UIAlertAction) -> Void in});
+        let alert = UIAlertController(title: ConstentAlertMessgages.ABOUT_APP_TITLE, message: ConstentAlertMessgages.ABOUT_APP_MESSAGE, preferredStyle: .Alert);
+        let action = UIAlertAction(title: ConstentAlertMessgages.Ok, style: .Default, handler: {(action: UIAlertAction) -> Void in});
         alert.addAction(action);
         presentViewController(alert, animated: true, completion: nil);
     }

@@ -73,12 +73,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate , UINavigationControllerDe
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
-        let rootViewController = ViewController();
-        self.navigationController = UINavigationController(rootViewController: rootViewController);
-        self.navigationController?.delegate = self;
-        self.window?.rootViewController = self.navigationController;
-        self.window?.backgroundColor = UIColor.lightGrayColor();
-        ConstentValues.windowFrame = self.window?.frame;
+        if let theWindow = self.window{
+            let rootViewController = ViewController();
+            self.navigationController = UINavigationController(rootViewController: rootViewController);
+            self.navigationController!.delegate = self;
+            theWindow.rootViewController = self.navigationController!;
+            theWindow.backgroundColor = UIColor.lightGrayColor();
+            ConstentRects.windowFrame = theWindow.frame;
+        }else{
+            self.window = UIWindow();
+            let rootViewController = ViewController();
+            self.navigationController = UINavigationController(rootViewController: rootViewController);
+            self.navigationController!.delegate = self;
+            self.window!.rootViewController = self.navigationController!;
+            self.window!.backgroundColor = UIColor.lightGrayColor();
+            ConstentRects.windowFrame = self.window!.frame;
+        }
         return true
     }
     

@@ -14,28 +14,23 @@ class EditSong : UIViewController{
     var delegate : AppDelegate!;
     var song : Song!;
     var songNameTF : UITextField!;
-    var songBodyTF : UITextField!;
+    var songBodyTV : LinedView!;
     
     override func viewDidLoad() {
         super.viewDidLoad();
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate;
-        displayAd();
         initNavController();
         initTextField();
         initToolbar();
     }
     
-    func displayAd(){
-        let ad = UIView(frame: ConstentValues.GAB);
-        ad.backgroundColor = UIColor.greenColor();
-        view.addSubview(ad);
-    }
+    
     
     func initToolbar(){
         var items = [UIBarButtonItem]();
-        let save = UIBarButtonItem(title: "save", style: .Plain, target: self, action: "saveSongData");
-        let share = UIBarButtonItem(title: "share", style: .Plain, target: self, action: "shareSong");
-        let delete = UIBarButtonItem(title: "delete", style: .Plain, target: self, action: "deleteSong");
+        let save = UIBarButtonItem(title: ConstentValues.TOOLBAR_SAVE, style: .Plain, target: self, action: "saveSongData");
+        let share = UIBarButtonItem(title: ConstentValues.TOOLBAR_SHARE, style: .Plain, target: self, action: "shareSong");
+        let delete = UIBarButtonItem(title: ConstentValues.TOOLBAR_DELETE, style: .Plain, target: self, action: "deleteSong");
         let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil);
         items.append(flex);
         items.append(save);
@@ -43,54 +38,48 @@ class EditSong : UIViewController{
         items.append(delete);
         items.append(flex);
         self.toolbarItems = items;
-        navigationController?.toolbarHidden = false;
-        navigationController?.toolbar.barTintColor = UIColor.darkGrayColor();
-        navigationController?.toolbar.tintColor = UIColor.whiteColor();
+        navigationController!.toolbarHidden = false;
+        navigationController!.toolbar.barTintColor = ConstentColors.NAVIGATION_BG_COLOR
+        navigationController!.toolbar.tintColor = ConstentColors.APP_TINT_COLOR
     }
     
     func initNavController(){
-        songNameTF = UITextField(frame: CGRect(x: 0, y: 0, width: 80, height: 30));
+        songNameTF = UITextField(frame: ConstentRects.NAV_TITLE_RECT);
         songNameTF.text = song.songName;
         songNameTF.textColor = UIColor.whiteColor();
         self.navigationItem.titleView = songNameTF;
         self.navigationItem.leftItemsSupplementBackButton = true;
-        navigationController?.navigationBar.tintColor = UIColor.whiteColor();
-        navigationController?.navigationBar.barTintColor = UIColor.darkGrayColor();
+        navigationController!.navigationBar.barTintColor = ConstentColors.NAVIGATION_BG_COLOR;
+        navigationController!.navigationBar.tintColor = ConstentColors.APP_TINT_COLOR;
     }
     
+    
     func initTextField(){
-        songBodyTF = UITextField(frame: ConstentValues.TF_RECT);
-        songBodyTF.placeholder = ConstentValues.EDIT_SONG;
-        songBodyTF.text = song.songBody;
-        view.addSubview(songBodyTF);
+        songBodyTV = LinedView(frame: ConstentRects.TF_RECT);
+        songBodyTV.backgroundColor = ConstentColors.APP_TINT_COLOR
+        songBodyTV.text = song.songBody;
+        view.addSubview(songBodyTV);
     }
     
     func saveSongData(){
-        song.songBody = songBodyTF.text;
+        song.songBody = songBodyTV.text;
         song.songName = songNameTF.text;
         delegate.saveContext();
-        navigationController?.popViewControllerAnimated(true);
-        alert("song saved");
+        navigationController!.popViewControllerAnimated(true);
     }
     
     func deleteSong(){
         delegate.managedObjectContext.deleteObject(song);
         delegate.saveContext();
-        navigationController?.popViewControllerAnimated(true);
-        alert("song deleted");
+        navigationController!.popViewControllerAnimated(true);
     }
     
     func shareSong(){
-        
+        let activityViewController = UIActivityViewController(activityItems: [songNameTF.text!,songBodyTV.text!], applicationActivities: []);
+        activityViewController.excludedActivityTypes = [UIActivityTypeMail,UIActivityTypePostToFacebook,UIActivityTypeMessage,UIActivityTypePostToTwitter];
+        presentViewController(activityViewController, animated : true, completion : nil);
     }
-    
-    func alert(msg : String){
-        let alert = UIAlertController(title: "", message: msg, preferredStyle: .Alert);
-        let action = UIAlertAction(title: ConstentValues.Ok, style: .Default, handler: {(action: UIAlertAction) -> Void in});
-        alert.addAction(action);
-        presentViewController(alert, animated: true, completion: nil);
-    }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
