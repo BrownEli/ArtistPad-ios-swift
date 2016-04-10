@@ -15,6 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate , UINavigationControllerDe
     var window: UIWindow?
     var navigationController : UINavigationController?;
     
+    /*
+     function for get a list of folders from database
+     depending on the type that was sent.
+     */
     func getlistOfFolders(type : Int)->[Folder]{
         var names : [Folder]!;
         let fetchRequest = NSFetchRequest(entityName: ConstentEntityNames.Folder);
@@ -27,7 +31,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate , UINavigationControllerDe
         return names;
     }
     
-    
+    /*
+     function for get a list of songs from database
+     depending on the the folders id and type that was sent.
+     */
     func getListOfSongs(idf : Int, type : Int)->[Song]{
         var songs : [Song]!;
         let fetchRequest = NSFetchRequest(entityName: ConstentEntityNames.Song);
@@ -40,6 +47,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate , UINavigationControllerDe
         return songs;
     }
     
+    /*
+     function for adding a new folder to the database.
+     name paramerter is folder name. type paramerter is the folders type.
+     */
     func insertFolder(name : String, type : Int)->Folder{
         let entityName = ConstentEntityNames.Folder;
         let folder = NSEntityDescription.insertNewObjectForEntityForName(entityName, inManagedObjectContext: managedObjectContext) as! Folder;
@@ -47,10 +58,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate , UINavigationControllerDe
         folder.type = type;
         folder.id = ID.id;
         saveContext();
-        ID.id++;
+        ID.id = ID.id + 1;
         return folder;
     }
     
+    /*
+     function for adding a new song to the database.
+     idf paramerter is the id of the folder.
+     type paramerter is the songs type.
+     songName paramerter is the name of the song.
+     songBody paramerter is the body of the song.
+     */
     func insertSong(idf : Int, type : Int ,songName : String, songBody : String)->Song{
         let song = NSEntityDescription.insertNewObjectForEntityForName(ConstentEntityNames.Song, inManagedObjectContext: managedObjectContext) as! Song;
         song.songName = songName;
@@ -59,34 +77,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate , UINavigationControllerDe
         song.idf = idf;
         song.type = type;
         saveContext();
-        ID.id++;
+        ID.id = ID.id + 1;
         return song;
     }
     
     /*
-    func update(entityName : String ,obj : NSManagedObject, tag : Int){
-    let batch = NSBatchUpdateRequest(entityName: entityName);
-    batch.propertiesToUpdate = getProperties(obj,tag : tag);
-    batch.resultType = .UpdatedObjectsCountResultType;
+     Function for deleting a list of songs from the database that belong to a folder with the id of idf.
+     */
+    func deleteAllSongsWithIdf(idf : Int, type : Int){
+        let list = getListOfSongs(idf, type: type);
+        for s in list {
+            if idf == s.idf {
+                managedObjectContext.deleteObject(s);
+            }
+        }
     }
-    */
+    
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        /*
+         Unwrapp's the window, construct's the navigationController and
+         set's the maiViewController.
+        */
         if let theWindow = self.window{
             let rootViewController = ViewController();
             self.navigationController = UINavigationController(rootViewController: rootViewController);
             self.navigationController!.delegate = self;
+            theWindow.backgroundColor = ConstentColors.APP_TINT_COLOR;
             theWindow.rootViewController = self.navigationController!;
-            theWindow.backgroundColor = UIColor.lightGrayColor();
             ConstentRects.windowFrame = theWindow.frame;
         }else{
+            /*
+             Construct's the navigationController and
+             set's the maiViewController.
+             */
             self.window = UIWindow();
             let rootViewController = ViewController();
             self.navigationController = UINavigationController(rootViewController: rootViewController);
             self.navigationController!.delegate = self;
+            self.window!.backgroundColor = ConstentColors.APP_TINT_COLOR;
             self.window!.rootViewController = self.navigationController!;
-            self.window!.backgroundColor = UIColor.lightGrayColor();
             ConstentRects.windowFrame = self.window!.frame;
         }
         return true

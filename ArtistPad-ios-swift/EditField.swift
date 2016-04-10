@@ -10,32 +10,41 @@ import UIKit
 
 class LinedView : UITextView {
     let fontSize : CGFloat = 20;
+    var padding : CGFloat!;
     
     override func drawRect(rect: CGRect) {
-        font = UIFont.boldSystemFontOfSize((rect.height / fontSize) - textContainer.lineFragmentPadding);
-        backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.3);
+        //changes the size of the font.
+        font = UIFont.boldSystemFontOfSize(fontSize);
+        //sets the padding to the lined textView.
         textContainerInset = UIEdgeInsetsMake(0, 15, 0, 15);
+        padding = textContainer.lineFragmentPadding;
         drawVerticalLines(rect);
         drawHerizontalLines(rect);
+        
     }
     
+    /*
+     Function for drawing the herizontal lines on the textView.
+     */
     func drawHerizontalLines(rect : CGRect){
         UIColor.blueColor().set();
         let context = UIGraphicsGetCurrentContext();
-        CGContextSetLineWidth(context, 1);
         CGContextSetLineJoin(context, .Round);
-        
-        for var i = fontSize; i < rect.height; i += fontSize{
+        var i = fontSize;
+        while i < rect.height{
             CGContextMoveToPoint(context, 0, i);
             CGContextAddLineToPoint(context, rect.width, i);
             CGContextStrokePath(context);
+            i += (fontSize + padding);
         }
     }
     
+    /*
+     Function for drawing vertical lines on the textView.
+     */
     func drawVerticalLines(rect : CGRect){
         UIColor.orangeColor().set();
         let context = UIGraphicsGetCurrentContext();
-        CGContextSetLineWidth(context, 1);
         CGContextSetLineJoin(context, .Round);
         
         CGContextMoveToPoint(context, 10, 0);

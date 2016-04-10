@@ -16,8 +16,8 @@ class DisplaySongs : UIViewController, UITableViewDelegate
     var folder : Folder!;
     var list : [Song]!;
     var tableData : UITableView!;
-    var navigator : UINavigationBar!;
     var add : String!;
+    var alertTitle : String!;
     var placeholderTF : String!;
     var wasOpen : Bool = false;
     
@@ -29,26 +29,34 @@ class DisplaySongs : UIViewController, UITableViewDelegate
         initToolbar();
     }
     
+    /*
+     Function for seting the text for the toolbar add button and the placeholder for the alert text filed.
+     */
     func setContentDetails(){
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate;
         switch (folder.type as! Int){
         case ConstentTypes.TYPE_SINGLES:
-            add = ConstentAlertMessgages.Add_Single;
+            add = ConstentValues.Toolbar_Add_Single;
             placeholderTF = ConstentAlertMessgages.Enter_Single
         case ConstentTypes.TYPE_COVERS:
-            add = ConstentAlertMessgages.Add_Cover;
+            add = ConstentValues.Toolbar_Add_Cover;
             placeholderTF = ConstentAlertMessgages.Enter_Cover
         case ConstentTypes.TYPE_POEMS:
-            add = ConstentAlertMessgages.Add_Poem;
+            add = ConstentValues.Toolbar_Add_Poem;
             placeholderTF = ConstentAlertMessgages.Enter_Poem
         default:
-            add = ConstentAlertMessgages.Add_Song;
+            add = ConstentValues.Toolbar_Add_Song;
             placeholderTF = ConstentAlertMessgages.Enter_Song
         }
+        alertTitle = add;
     }
     
+    /*
+     Function for initializing and toolbar items,
+     and seting toolbar bg color.
+     */
     func initToolbar(){
-        let add = UIBarButtonItem(title: self.add, style: .Plain, target: self, action: "alertTextField");
+        let add = UIBarButtonItem(title: self.add, style: .Plain, target: self, action: #selector(DisplaySongs.alertTextField));
         let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil);
         var items = [UIBarButtonItem]();
         items.append(flex);
@@ -60,6 +68,10 @@ class DisplaySongs : UIViewController, UITableViewDelegate
         navigationController!.toolbar.tintColor = ConstentColors.APP_TINT_COLOR
     }
     
+    /*
+     Function for initializing and navigation items,
+     and set navigation bg color
+     */
     func initNavController(){
         let lable = UILabel(frame : ConstentRects.NAV_TITLE_RECT);
         lable.text = self.folder.folderName;
@@ -70,19 +82,20 @@ class DisplaySongs : UIViewController, UITableViewDelegate
         navigationController!.navigationBar.tintColor = ConstentColors.APP_TINT_COLOR;
     }
     
-    
+    /*
+     Function for initializing and the table view.
+     */
     func initTable(){
         tableData = UITableView(frame: ConstentRects.TABLE_RECT);
         tableData.delegate = self;
         tableData.dataSource = self;
-        //tableData.backgroundColor = ConstentColors.CONTENT_BG_COLOR;
         tableData.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: ConstentValues.Identifier);
         list = delegate.getListOfSongs(self.folder.id as! Int, type: self.folder.type as! Int);
         view.addSubview(tableData);
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return ConstentValues.NUM_OF_SECTIONS_TABLEVIEW;
+        return 1;
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -106,8 +119,10 @@ class DisplaySongs : UIViewController, UITableViewDelegate
         return true
     }
     
+    //allow's row editing for deletion.
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
+            //deletes a song.
             delegate.managedObjectContext.deleteObject(list[indexPath.row]);
             delegate.saveContext();
             list.removeAtIndex(indexPath.row);
@@ -116,7 +131,9 @@ class DisplaySongs : UIViewController, UITableViewDelegate
     }
     
     
-    //app simple alerter
+    /*
+     Function for alerting a simple message.
+     */
     func alert(title : String , msg : String)->UIAlertController{
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert);
         let action = UIAlertAction(title: ConstentAlertMessgages.Ok, style: .Default, handler: {(action: UIAlertAction) -> Void in});
@@ -124,12 +141,12 @@ class DisplaySongs : UIViewController, UITableViewDelegate
         return alert;
     }
     
-    //app textfiled alerter
+    /*
+     Function for alerting a textField to add a new Song.
+     */
     func alertTextField(){
-        let alert = UIAlertController(title: title, message: "", preferredStyle: .Alert);
-        
+        let alert = UIAlertController(title: alertTitle, message: "", preferredStyle: .Alert);
         let action = UIAlertAction(title: ConstentAlertMessgages.Done, style: .Default, handler: {(action: UIAlertAction) -> Void in
-            
             if let theTextFields = alert.textFields{
                 let songName = theTextFields[0].text!;
                 let song = self.delegate.insertSong(self.folder.id! as Int, type : self.folder.type! as Int, songName: songName, songBody: "");
@@ -137,17 +154,16 @@ class DisplaySongs : UIViewController, UITableViewDelegate
                 self.tableData.reloadData();
             }
         });
-        
         alert.addTextFieldWithConfigurationHandler { (textField: UITextField) -> Void in
             textField.placeholder = self.placeholderTF;
         }
-        
         alert.addAction(action);
         presentViewController(alert, animated: true, completion: nil);
     }
     
     override func viewWillAppear(animated: Bool) {
         if wasOpen {
+            //If user navigated back to this viewController after changing a detail about a song.
             list = delegate.getListOfSongs(self.folder.id as! Int, type: self.folder.type as! Int);
             tableData.reloadData();
         }

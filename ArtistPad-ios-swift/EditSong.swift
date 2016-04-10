@@ -14,7 +14,7 @@ class EditSong : UIViewController{
     var delegate : AppDelegate!;
     var song : Song!;
     var songNameTF : UITextField!;
-    var songBodyTV : LinedView!;
+    var songBodyLV : LinedView!;
     
     override func viewDidLoad() {
         super.viewDidLoad();
@@ -24,13 +24,15 @@ class EditSong : UIViewController{
         initToolbar();
     }
     
-    
-    
+    /*
+     Function for initializing and toolbar items,
+     and seting toolbar bg color.
+     */
     func initToolbar(){
         var items = [UIBarButtonItem]();
-        let save = UIBarButtonItem(title: ConstentValues.TOOLBAR_SAVE, style: .Plain, target: self, action: "saveSongData");
-        let share = UIBarButtonItem(title: ConstentValues.TOOLBAR_SHARE, style: .Plain, target: self, action: "shareSong");
-        let delete = UIBarButtonItem(title: ConstentValues.TOOLBAR_DELETE, style: .Plain, target: self, action: "deleteSong");
+        let save = UIBarButtonItem(title: ConstentValues.Toolbar_Save, style: .Plain, target: self, action: #selector(EditSong.saveSongData));
+        let share = UIBarButtonItem(title: ConstentValues.Toolbar_Share, style: .Plain, target: self, action: #selector(EditSong.shareSong));
+        let delete = UIBarButtonItem(title: ConstentValues.Toolbar_Delete, style: .Plain, target: self, action: #selector(EditSong.deleteSong));
         let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil);
         items.append(flex);
         items.append(save);
@@ -43,6 +45,10 @@ class EditSong : UIViewController{
         navigationController!.toolbar.tintColor = ConstentColors.APP_TINT_COLOR
     }
     
+    /*
+     Function for initializing and navigation items,
+     and set navigation bg color
+     */
     func initNavController(){
         songNameTF = UITextField(frame: ConstentRects.NAV_TITLE_RECT);
         songNameTF.text = song.songName;
@@ -53,30 +59,39 @@ class EditSong : UIViewController{
         navigationController!.navigationBar.tintColor = ConstentColors.APP_TINT_COLOR;
     }
     
-    
+    /*
+     Function for initializing the lined textView.
+     */
     func initTextField(){
-        songBodyTV = LinedView(frame: ConstentRects.TF_RECT);
-        songBodyTV.backgroundColor = ConstentColors.APP_TINT_COLOR
-        songBodyTV.text = song.songBody;
-        view.addSubview(songBodyTV);
+        songBodyLV = LinedView(frame: ConstentRects.TF_RECT);
+        songBodyLV.backgroundColor = ConstentColors.APP_TINT_COLOR
+        songBodyLV.text = song.songBody;
+        view.addSubview(songBodyLV);
     }
     
+    /*
+     Function for saving the song detail's in the database.
+     */
     func saveSongData(){
-        song.songBody = songBodyTV.text;
+        song.songBody = songBodyLV.text;
         song.songName = songNameTF.text;
         delegate.saveContext();
-        navigationController!.popViewControllerAnimated(true);
     }
     
+    /*
+     Function for deleteing the song from the database.
+     */
     func deleteSong(){
         delegate.managedObjectContext.deleteObject(song);
         delegate.saveContext();
-        navigationController!.popViewControllerAnimated(true);
     }
     
+    /*
+     Function for sharing a song via messagess and Email.
+     */
     func shareSong(){
-        let activityViewController = UIActivityViewController(activityItems: [songNameTF.text!,songBodyTV.text!], applicationActivities: []);
-        activityViewController.excludedActivityTypes = [UIActivityTypeMail,UIActivityTypePostToFacebook,UIActivityTypeMessage,UIActivityTypePostToTwitter];
+        let activityViewController = UIActivityViewController(activityItems: [songNameTF.text!,songBodyLV.text!], applicationActivities: []);
+        activityViewController.excludedActivityTypes = [UIActivityTypeMail,UIActivityTypeMessage];
         presentViewController(activityViewController, animated : true, completion : nil);
     }
 

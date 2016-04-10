@@ -11,12 +11,12 @@ import CoreData
 
 
 class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDelegate{
-    var navigator : UINavigationBar!;
     var delegate : AppDelegate!;
     var _list : [Folder]!;
     var _tableData : UITableView!;
     var pageTitle : String!;
     var add : String!;
+    var alertTitle : String!;
     var placeholderTF : String!;
     var type : Int!;
     var wasOpen : Bool = false;
@@ -29,19 +29,27 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
         initTable();
     }
     
+    /*
+     Function for seting the text for the pagetitle,the toolbar add button and the placeholder for the alert text filed.
+     */
     func setContentDetails(){
         delegate = UIApplication.sharedApplication().delegate as! AppDelegate;
         if type == ConstentTypes.TYPE_ALBUMS {
             pageTitle = ConstentPageTitles.Albums
-            add = ConstentAlertMessgages.Add_Album;
+            add = ConstentValues.Toolbar_Add_Album;
             placeholderTF = ConstentAlertMessgages.Enter_Album
         }else if type == ConstentTypes.TYPE_MIXTAPES{
             pageTitle = ConstentPageTitles.Mixtapes
-            add = ConstentAlertMessgages.Add_Mixtape;
+            add = ConstentValues.Toolbar_Add_Mixtape;
             placeholderTF = ConstentAlertMessgages.Enter_Mixtape
         }
+        alertTitle = add;
     }
     
+    /*
+     Function for initializing and navigation items,
+     and set navigation bg color
+     */
     func initNavController(){
         let lable = UILabel(frame: ConstentRects.NAV_TITLE_RECT);
         lable.text = pageTitle;
@@ -52,8 +60,12 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
         navigationController!.navigationBar.tintColor = ConstentColors.APP_TINT_COLOR;
     }
     
+    /*
+     Function for initializing and toolbar items,
+     and seting toolbar bg color.
+     */
     func initToolbar(){
-        let add = UIBarButtonItem(title: self.add, style: .Plain, target: self, action: "alertTextField");
+        let add = UIBarButtonItem(title: self.add, style: .Plain, target: self, action: #selector(DisplayFolders.alertTextField));
         let flex = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil);
         var items = [UIBarButtonItem]();
         items.append(flex);
@@ -65,18 +77,20 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
         navigationController!.toolbar.tintColor = ConstentColors.APP_TINT_COLOR
     }
     
+    /*
+     Function for initializing and the table view.
+     */
     func initTable(){
         _tableData = UITableView(frame: ConstentRects.TABLE_RECT);
         _tableData.delegate = self;
         _tableData.dataSource = self;
-        //_tableData.backgroundColor = ConstentColors.CONTENT_BG_COLOR;
         _tableData.registerClass(UITableViewCell.classForCoder(), forCellReuseIdentifier: ConstentValues.Identifier);
         _list = delegate.getlistOfFolders(type);
         view.addSubview(_tableData);
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return ConstentValues.NUM_OF_SECTIONS_TABLEVIEW;
+        return 1;
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -101,17 +115,21 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
         return true
     }
     
+    //allow's row editing for deletion.
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
+            //delete's a folder
             delegate.managedObjectContext.deleteObject(_list[indexPath.row]);
+            delegate.deleteAllSongsWithIdf(_list[indexPath.row].id as! Int, type: type);
             delegate.saveContext();
             self._list.removeAtIndex(indexPath.row);
             self._tableData.reloadData();
         }
     }
     
-    
-    //app simple alerter
+    /*
+     Function for alerting a simple message.
+     */
     func alert(title : String , msg : String){
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .Alert);
         let action = UIAlertAction(title: ConstentAlertMessgages.Ok, style: .Default, handler: {(action: UIAlertAction) -> Void in});
@@ -119,14 +137,15 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
         navigationController?.pushViewController(alert, animated: true);
     }
     
-    //app textfiled alerter
+    /*
+     Function for alerting a textField to add a new Folder.
+     */
     func alertTextField(){
-        let alert = UIAlertController(title: title, message: "", preferredStyle: .Alert);
+        let alert = UIAlertController(title: alertTitle, message: "", preferredStyle: .Alert);
         let action = UIAlertAction(title: ConstentAlertMessgages.Done, style: .Default, handler: {(action: UIAlertAction) -> Void in
             if let theTextFields = alert.textFields{
-                let entityData = theTextFields[0].text!;
-                let delegate = UIApplication.sharedApplication().delegate as! AppDelegate;
-                let folder = delegate.insertFolder(entityData, type : self.type);
+                let folderName = theTextFields[0].text!;
+                let folder = self.delegate.insertFolder(folderName, type : self.type);
                 self._list.append(folder);
                 self._tableData.reloadData();
             }
@@ -139,6 +158,7 @@ class DisplayFolders: UIViewController , UITableViewDataSource, UITableViewDeleg
     }
     
     override func viewWillAppear(animated: Bool) {
+        //If user navigated back to this viewController after changing a detail about a folder.
         if wasOpen {
             _list = delegate.getlistOfFolders(type);
             _tableData.reloadData();
