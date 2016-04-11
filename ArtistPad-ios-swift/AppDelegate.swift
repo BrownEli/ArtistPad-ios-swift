@@ -89,6 +89,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate , UINavigationControllerDe
         for s in list {
             if idf == s.idf {
                 managedObjectContext.deleteObject(s);
+                saveContext();
             }
         }
     }
